@@ -1,6 +1,4 @@
 #-----------------------------------IMPORTACION DE LIBRERIAS-----------------------------------#
-import pythoncom
-pythoncom.CoInitialize()
 import shutil
 import pandas as pd 
 import numpy as np
@@ -256,74 +254,75 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar el correo (para revisión antes de enviar)
 #    mail.Display()
 
-def enviar_validacion_inventory_prueba(df, destinatarios,nombre_archivo=None, archivo_adjunto= None,cc = None):
-   """
-   Enviar correo de los resultados de validacion a los responsable del manual file de SI=SO.
+# def enviar_validacion_inventory_prueba(df, destinatarios,nombre_archivo=None, archivo_adjunto= None,cc = None):
+#    """
+#    Enviar correo de los resultados de validacion a los responsable del manual file de SI=SO.
 
-   Parámetros 
-   df (pandas) :es el manual file de SI=SO que se va a realizar su respectiva validacion.
-   nombre_archivo (str) :es el nombre del archvio al que se realizo la validacion. 
-   destinatarios (list str) :es el nombre del responsable del manual file.
-   archivo_adjunto (str) : son los resultados de las validaciones del manual file inventory 
-   cc (list str) : es una lista de correos electronicos que se van a copiar los resultados 
+#    Parámetros 
+#    df (pandas) :es el manual file de SI=SO que se va a realizar su respectiva validacion.
+#    nombre_archivo (str) :es el nombre del archvio al que se realizo la validacion. 
+#    destinatarios (list str) :es el nombre del responsable del manual file.
+#    archivo_adjunto (str) : son los resultados de las validaciones del manual file inventory 
+#    cc (list str) : es una lista de correos electronicos que se van a copiar los resultados 
 
-   Retorna
-   Genera un Mail donde tiene los resultados de la revision adjunto y el resultado final si puede subirse o no. 
+#    Retorna
+#    Genera un Mail donde tiene los resultados de la revision adjunto y el resultado final si puede subirse o no. 
 
-   """
-   # Establecer la ruta 
-   carpeta_output = r'C:\Users\IVI6131\OneDrive - MDLZ\Consolidación Información OSA WACAM - General\Manual Files\2025\P6\Output'
-   timestamp = datetime.now().strftime("%Y%m%d")
-   if not archivo_adjunto:
-       archivo_adjunto = f"Resultados_validacion_inventory_{timestamp}.xlsx"
-   ruta_completa_excel = os.path.join(carpeta_output,archivo_adjunto)
+#    """
+#    # Establecer la ruta 
+#    carpeta_output = r'C:\Users\IVI6131\OneDrive - MDLZ\Consolidación Información OSA WACAM - General\Manual Files\2025\P6\Output'
+#    timestamp = datetime.now().strftime("%Y%m%d")
+#    if not archivo_adjunto:
+#        archivo_adjunto = f"Resultados_validacion_inventory_{timestamp}.xlsx"
+#    ruta_completa_excel = os.path.join(carpeta_output,archivo_adjunto)
 
-   # Guardar el DataFrame como archivo Excel
-   df.to_excel(ruta_completa_excel,index=False)
-   # Evaluar si el archivo pasó todas las validaciones
-   resultado_final = df[df["Indicador"] == "Resultado general"]["Resultado"].iloc[0]
-   archivo_valido = resultado_final.strip().lower() == "archivo conforme"
-   # Definir el cuerpo del mensaje
-   if archivo_valido:
-       cuerpo_html = f"""
-    <p><b>✅ El archivo pasó todas las validaciones. Puede montarse.</b></p><br>
-    <p>Hola,</p>
-    <p>Se realizó la validación automática del archivo manual.</p>
-    <p>Conclusión: <b style='color:green;'>Archivo conforme</b>.</p>
-       """
-   else:
-       errores = df[
-           (df["Indicador"] != "Resultado general") &
-           (df["Resultado"].str.lower() != "ok")
-       ]["Hallazgo"].tolist()
-       errores_texto = "<br>• " + "<br>• ".join(errores)
-       cuerpo_html = f"""
-    <p><b>ERROR El archivo ({nombre_archivo}) tiene observaciones. No se debe montar.</b></p>
-    <p>Hola,</p>
-    <p>Se realizó la validación automática del archivo manual.</p>
-    <p>Conclusión: <b style='color:red;'>Archivo con errores</b>.</p>
-    <p>Errores detectados:</p>
-       {errores_texto}
-       """
-   # Crear correo en Outlook
-   outlook = win32.Dispatch("Outlook.Application")
-   mail = outlook.CreateItem(0)
-   # Convertir listas en texto separado por punto y coma
-   if isinstance(destinatarios, list):
-       mail.To = ";".join(destinatarios)
-   else:
-       mail.To = destinatarios
-   if cc:
-       if isinstance(cc, list):
-           mail.CC = ";".join(cc)
-       else:
-           mail.CC = cc
-   mail.Subject = f"📋 Validación {nombre_archivo}"
-   mail.HTMLBody = cuerpo_html
-   # Adjuntar el archivo Excel
-   if not os.path.exists(ruta_completa_excel):
-       raise FileNotFoundError(f"No se encontró el archivo para adjuntar:{ruta_completa_excel}")
-   attachment_path = os.path.abspath(ruta_completa_excel)
-   mail.Attachments.Add(attachment_path)
-   # Mostrar correo (revisión manual)
-   mail.Display()
+#    # Guardar el DataFrame como archivo Excel
+#    df.to_excel(ruta_completa_excel,index=False)
+#    # Evaluar si el archivo pasó todas las validaciones
+#    resultado_final = df[df["Indicador"] == "Resultado general"]["Resultado"].iloc[0]
+#    archivo_valido = resultado_final.strip().lower() == "archivo conforme"
+#    # Definir el cuerpo del mensaje
+#    if archivo_valido:
+#        cuerpo_html = f"""
+#     <p><b>✅ El archivo pasó todas las validaciones. Puede montarse.</b></p><br>
+#     <p>Hola,</p>
+#     <p>Se realizó la validación automática del archivo manual.</p>
+#     <p>Conclusión: <b style='color:green;'>Archivo conforme</b>.</p>
+#        """
+#    else:
+#        errores = df[
+#            (df["Indicador"] != "Resultado general") &
+#            (df["Resultado"].str.lower() != "ok")
+#        ]["Hallazgo"].tolist()
+#        errores_texto = "<br>• " + "<br>• ".join(errores)
+#        cuerpo_html = f"""
+#     <p><b>ERROR El archivo ({nombre_archivo}) tiene observaciones. No se debe montar.</b></p>
+#     <p>Hola,</p>
+#     <p>Se realizó la validación automática del archivo manual.</p>
+#     <p>Conclusión: <b style='color:red;'>Archivo con errores</b>.</p>
+#     <p>Errores detectados:</p>
+#        {errores_texto}
+#        """
+#    # Crear correo en Outlook
+#    outlook = win32.Dispatch("Outlook.Application")
+#    mail = outlook.CreateItem(0)
+#    # Convertir listas en texto separado por punto y coma
+#    if isinstance(destinatarios, list):
+#        mail.To = ";".join(destinatarios)
+#    else:
+#        mail.To = destinatarios
+#    if cc:
+#        if isinstance(cc, list):
+#            mail.CC = ";".join(cc)
+#        else:
+#            mail.CC = cc
+#    mail.Subject = f"📋 Validación {nombre_archivo}"
+#    mail.HTMLBody = cuerpo_html
+#    # Adjuntar el archivo Excel
+#    if not os.path.exists(ruta_completa_excel):
+#        raise FileNotFoundError(f"No se encontró el archivo para adjuntar:{ruta_completa_excel}")
+#    attachment_path = os.path.abspath(ruta_completa_excel)
+#    mail.Attachments.Add(attachment_path)
+#    # Mostrar correo (revisión manual)
+
+#    mail.Display()
