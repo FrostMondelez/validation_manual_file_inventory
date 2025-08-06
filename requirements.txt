@@ -1,0 +1,8 @@
+streamlit
+pandas
+os
+sys 
+shutil
+numpy 
+re
+datetime
