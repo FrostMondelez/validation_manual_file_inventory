@@ -1,9 +1,5 @@
 import streamlit as st
 import pandas as pd
-import os
-import sys 
-sys.path.append(r"C:\Users\IVI6131\OneDrive - MDLZ\Consolidación Información OSA WACAM - General\Manual Files\2025\Proceso\Funciones")
-
 # 👉 Importa tu función de validación
 from Funciones_validacion_inventory import validar_reglas_manual_file_inventory_prueba
 
@@ -27,4 +23,5 @@ if archivo:
                data=f,
                file_name="resultado_validacion.xlsx",
                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
            )
