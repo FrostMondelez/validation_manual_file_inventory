@@ -3,7 +3,7 @@ import shutil
 import pandas as pd 
 import numpy as np
 import re
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from datetime import datetime
 import os
 import win32com.client as win32
@@ -326,3 +326,4 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar correo (revisión manual)
 
 #    mail.Display()
+
