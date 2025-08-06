@@ -2,42 +2,42 @@
 import shutil
 import pandas as pd 
 import numpy as np
-import re
+# import re
 # import matplotlib.pyplot as plt
-from datetime import datetime
-import os
-import win32com.client as win32
+# from datetime import datetime
+# import os
+# import win32com.client as win32
 
-# Funcion para leer el manual file a elegir 
-def obtener_archivo_mas_reciente(Anio, periodo, tipo_manual_file, wacam, patron):
-   """
-   Construye la ruta y retorna el path completo del archivo más reciente
-   que contiene un patrón opcional en su nombre.
+# # Funcion para leer el manual file a elegir 
+# def obtener_archivo_mas_reciente(Anio, periodo, tipo_manual_file, wacam, patron):
+#    """
+#    Construye la ruta y retorna el path completo del archivo más reciente
+#    que contiene un patrón opcional en su nombre.
 
-   Parámetros:
-   - Anio (str) : establecer el año de validacion (2025)
-   - periodo (str) : establecer el periodo de validacion (P6)
-   - tipo_manual_file (str): es la carpeta que debo establecer (Sell_out_igual_sell_in)
-   - wacam (str): es la carpeta de consolidacion wacam.
-   - patron: str (parte del nombre del archivo a filtrar, ej: 'sell_out')
+#    Parámetros:
+#    - Anio (str) : establecer el año de validacion (2025)
+#    - periodo (str) : establecer el periodo de validacion (P6)
+#    - tipo_manual_file (str): es la carpeta que debo establecer (Sell_out_igual_sell_in)
+#    - wacam (str): es la carpeta de consolidacion wacam.
+#    - patron: str (parte del nombre del archivo a filtrar, ej: 'sell_out')
 
-   Retorna:
-   - Ruta completa del archivo más reciente o None si no encuentra archivos.
-   """
+#    Retorna:
+#    - Ruta completa del archivo más reciente o None si no encuentra archivos.
+#    """
    
-   base = r'C:\\Users\\IVI6131\\OneDrive - MDLZ\\Consolidación Información OSA WACAM - General\\Manual Files'
-   ruta = os.path.join(base, str(Anio), periodo, 'Input', tipo_manual_file, wacam)
-   if not os.path.exists(ruta):
-       print(f"Ruta no encontrada: {ruta}")
-       return None
-   archivos = [f for f in os.listdir(ruta) if patron.lower() in f.lower()]
-   if not archivos:
-       print(f"No se encontraron archivos con el patrón '{patron}' en: {ruta}")
-       return None
-   # Ordenar por fecha de modificación más reciente
-   archivos.sort(key=lambda f: os.path.getmtime(os.path.join(ruta, f)), reverse=True)
-   archivo_mas_reciente = archivos[0]
-   return os.path.join(ruta, archivo_mas_reciente)
+#    base = r'C:\\Users\\IVI6131\\OneDrive - MDLZ\\Consolidación Información OSA WACAM - General\\Manual Files'
+#    ruta = os.path.join(base, str(Anio), periodo, 'Input', tipo_manual_file, wacam)
+#    if not os.path.exists(ruta):
+#        print(f"Ruta no encontrada: {ruta}")
+#        return None
+#    archivos = [f for f in os.listdir(ruta) if patron.lower() in f.lower()]
+#    if not archivos:
+#        print(f"No se encontraron archivos con el patrón '{patron}' en: {ruta}")
+#        return None
+#    # Ordenar por fecha de modificación más reciente
+#    archivos.sort(key=lambda f: os.path.getmtime(os.path.join(ruta, f)), reverse=True)
+#    archivo_mas_reciente = archivos[0]
+#    return os.path.join(ruta, archivo_mas_reciente)
 
 def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
    """
@@ -326,4 +326,5 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar correo (revisión manual)
 
 #    mail.Display()
+
 
