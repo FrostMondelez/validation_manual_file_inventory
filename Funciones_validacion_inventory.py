@@ -140,6 +140,15 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
        else:
            add("SKUS > 10 Digitos","OK","Todos los Skus tinen más de 10 digitos")
 
+   # === 8. Validación de columnas exactas y sin datos fuera ===
+   # Validar que no haya columnas adicionales
+   columnas_extra = [c for c in df.columns if c not in columnas_requeridas]
+   if columnas_extra:
+        errores += 1
+        add("Estructura columnas", "ERROR", f"Columnas no permitidas: {', '.join(columnas_extra)}")
+   else:
+        add("Estructura columnas", "OK", "No hay columnas adicionales")
+
 #    # === 8. Indicador por país del estado de los SKU ===
 #    if 'STATUS_UNICO' in df.columns and 'PAIS' in df.columns:
 #     resumen_estado = (
@@ -326,6 +335,7 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar correo (revisión manual)
 
 #    mail.Display()
+
 
 
 
