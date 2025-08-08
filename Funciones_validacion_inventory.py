@@ -140,6 +140,17 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
        else:
            add("SKUS > 10 Digitos","OK","Todos los Skus tinen más de 10 digitos")
 
+   # === 8. Validacción Country_Key en mayúsculas ===
+   if "Country_Key" in df.columns:
+       no_mayusculas = df[~df["Country_Key"].astype(str).str.isupper()]
+
+       if not no_mayusculas.empty:
+           errores += 1
+           filas = (no_mayusculas.index + 2).tolist()
+           add["Country_Key Mayus", "ERROR", f'Valores no están en mayúsuclas. Filas: {filas[:10]}']
+       else:
+           add["Country_Key Mayus", "OK", f'Todos los valores estan en mayúscula']
+
 #    # === 8. Indicador por país del estado de los SKU ===
 #    if 'STATUS_UNICO' in df.columns and 'PAIS' in df.columns:
 #     resumen_estado = (
@@ -326,5 +337,6 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar correo (revisión manual)
 
 #    mail.Display()
+
 
 
