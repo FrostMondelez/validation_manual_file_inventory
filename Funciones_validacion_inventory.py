@@ -145,9 +145,9 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
    columnas_extra = [c for c in df.columns if c not in columnas_requeridas]
    if columnas_extra:
         errores += 1
-        add("Estructura columnas", "ERROR", f"Columnas no permitidas: {', '.join(columnas_extra)}")
+        add("Estructura columnas adicionales", "ERROR", f"Columnas no permitidas: {', '.join(columnas_extra)}")
    else:
-        add("Estructura columnas", "OK", "No hay columnas adicionales")
+        add("Estructura columnas adicionales", "OK", "No hay columnas adicionales")
 
 #    # === 8. Indicador por país del estado de los SKU ===
 #    if 'STATUS_UNICO' in df.columns and 'PAIS' in df.columns:
@@ -335,6 +335,7 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar correo (revisión manual)
 
 #    mail.Display()
+
 
 
 
