@@ -63,12 +63,24 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
            'Hallazgo': hallazgo
        })
    # === 1. Estructura ===
-   faltantes = [c for c in columnas_requeridas if c not in df.columns]
-   if faltantes:
-       errores += 1
-       add('Estructura', 'ERROR', 'Faltan columnas: ' + ', '.join(faltantes))
+   requeridas = columnas_requeridas
+   faltantes = [c for c in requeridas if c not in df.columns]
+   sobrantes = [c for c in df.columns if c not in requeridas]
+   if faltantes or sobrantes:
+    errores += 1
+    mensajes = []
+    if faltantes:
+       mensajes.append("Faltan columnas: " + ", ".join(faltantes))
+    if sobrantes:
+       mensajes.append("Columnas no permitidas: " + ", ".join(sobrantes))
+    add('Estructura', 'Error', " ; ".join(mensajes))
    else:
-       add('Estructura', 'OK', 'Todas las columnas requeridas están presentes')
+    # Revision de orden de columnas 
+    if list(df.columns) != list(requeridas):
+       errores += 1
+       add('Estructura', 'Error', 'Orden de columnas incorrecto')
+    else:
+       add('Estructura', 'Estructura OK', 'Exacta y en orden')
 
    # === 3. Duplicados lógicos (Customer_SI + SKU) ===
    if all(col in df.columns for col in ["Country_Key","Customer_SI", "SKU"]):
@@ -335,6 +347,7 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar correo (revisión manual)
 
 #    mail.Display()
+
 
 
 
