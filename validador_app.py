@@ -3,6 +3,7 @@ import pandas as pd
 # 👉 Importa tu función de validación
 from Funciones_validacion_inventory import validar_reglas_manual_file_inventory_prueba
 
+st.set_page_config(page_title="Validador Automático File Inventory", layout="wide")
 st.title("Validador Automático de Archivos Manual file Inventory")
 archivo = st.file_uploader("📂 Carga tu archivo Excel", type=["xlsx"])
 if archivo:
@@ -25,3 +26,4 @@ if archivo:
                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
            )
+
