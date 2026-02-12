@@ -161,35 +161,34 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
    else:
         add("Estructura columnas adicionales", "OK", "No hay columnas adicionales")
 
-#    # === 8. Indicador por país del estado de los SKU ===
-#    if 'STATUS_UNICO' in df.columns and 'PAIS' in df.columns:
-#     resumen_estado = (
-#         df.groupby(['PAIS', 'STATUS_UNICO'])
-#         .size()
-#         .unstack(fill_value=0))
-
-#     resumen_estado['TOTAL'] = resumen_estado.sum(axis=1)
-
-#     for estado in ['03', 'Z4', 'NO_ENCONTRO_PDR']:
-#         resumen_estado[f'%_{estado}'] = (
-#             resumen_estado.get(estado, 0) / resumen_estado['TOTAL'] * 100).round(2)
-
-#     # Crear fila por cada país
-#     for pais in resumen_estado.index:
-#         fila = resumen_estado.loc[pais]
-#         add(f'SKU Status por {pais} PDR', 'Adventencia', f"{pais} → 03: {fila.get('%_03', 0)}%, Z4: {fila.get('%_Z4', 0)}%, Descontinuados: {fila.get('%_NO_ENCONTRO_PDR', 0)}%")
-#    else:
-#         add(f'SKU Status por {pais} PDR', 'ERROR', 'Faltan columnas STATUS_UNICO o PAIS')
-#    # === 9. Indicador por país del estado de los SKU ===
-#    if "SKU" in df.columns:
-#        # Detectamos Skus que no sean numéricos.
-#        sku_alfanumericos = df[~df["SKU"].astype(str).str.isnumeric()]
-#        if not sku_alfanumericos.empty:
-#            errores += 1
-#            filas = (sku_alfanumericos.index + 2).tolist()
-#            add("SKU Alfanuméricos", "ERROR", f"Skus alfanuméricos rencontrados -> Filas:{filas[:10]}")
-#        else:
-#            add("SKU Alfanuméricos", "OK","Todos los Skus son Númericos")
+   # === 8. Validación Inventory_Tons > 0 y 4 decimales ===
+   if "Inventory_Tons" in df.columns:
+    # Convertimos a numérico (si hay error queda NaN)
+    df["Inventory_Tons_num"] = pd.to_numeric(df["Inventory_Tons"], errors="coerce")
+    # 1️⃣ Valores no numéricos
+    no_numericos = df[df["Inventory_Tons_num"].isna()]
+    # 2️⃣ Valores iguales a 0
+    ceros = df[df["Inventory_Tons_num"] == 0]
+    # 3️⃣ Valores que no tengan exactamente 4 decimales
+    no_4_decimales = df[
+       df["Inventory_Tons_num"].apply(
+           lambda x: round(x, 4) != x if pd.notnull(x) else False
+       )
+    ]
+    if not no_numericos.empty:
+       errores += 1
+       filas = (no_numericos.index + 2).tolist()
+       add("Inventory_Tons", "ERROR", f"Valores no numéricos → Filas: {filas[:10]}")
+    if not ceros.empty:
+       errores += 1
+       filas = (ceros.index + 2).tolist()
+       add("Inventory_Tons", "ERROR", f"No se permiten valores 0 → Filas: {filas[:10]}")
+    if not no_4_decimales.empty:
+       errores += 1
+       filas = (no_4_decimales.index + 2).tolist()
+       add("Inventory_Tons", "ERROR", f"Debe tener exactamente 4 decimales → Filas: {filas[:10]}")
+    if (no_numericos.empty and ceros.empty and no_4_decimales.empty):
+       add("Inventory_Tons", "OK", "Formato correcto, mayor a 0 y con 4 decimales")
    # === Resultado general ===
    estado = 'Archivo conforme' if errores == 0 else 'Archivo con errores'
    add('Resultado general', estado, None, regla='Consolidado')
@@ -347,6 +346,7 @@ def validar_reglas_manual_file_inventory_prueba(df, nombre_archivo):
 #    # Mostrar correo (revisión manual)
 
 #    mail.Display()
+
 
 
 
